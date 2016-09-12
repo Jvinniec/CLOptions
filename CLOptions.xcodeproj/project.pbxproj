@@ -25,7 +25,7 @@
 /* Begin PBXFileReference section */
 		6E11FBB81D831AAF00583976 /* CLOptions */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CLOptions; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E11FBC21D831B1D00583976 /* cloptions_example.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = cloptions_example.cpp; path = examples/cloptions_example.cpp; sourceTree = SOURCE_ROOT; };
-		6E11FBC41D831B4900583976 /* CLOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CLOptions.h; path = examples/CLOptions.h; sourceTree = SOURCE_ROOT; };
+		6E71191B1D873DDC0048E638 /* CLOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLOptions.h; path = include/CLOptions.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,8 +58,8 @@
 		6E11FBBA1D831AAF00583976 /* CLOptions */ = {
 			isa = PBXGroup;
 			children = (
+				6E71191B1D873DDC0048E638 /* CLOptions.h */,
 				6E11FBC21D831B1D00583976 /* cloptions_example.cpp */,
-				6E11FBC41D831B4900583976 /* CLOptions.h */,
 			);
 			path = CLOptions;
 			sourceTree = "<group>";
@@ -241,6 +241,7 @@
 				6E11FBC11D831AAF00583976 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
