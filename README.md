@@ -12,7 +12,8 @@ printing help text and setting default values for those parameters.
 #Example#
 You could imagine creating some executable, in which you want the
 user to be able to provide you with some options.
-<b>executable.cpp</b>
+
+<b>executable.cpp</b></br>
 This file is also available in the 'examples' directory.
 ```c++
 #include <iostream>
