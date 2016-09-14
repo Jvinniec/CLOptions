@@ -235,9 +235,31 @@ inline std::vector<std::string> split(const std::string &s, char delim) {
 class CLOptions {
 public:
     // Basic constructor
-    CLOptions() {} ;
+    CLOptions()
+    {
+//        longopts = std::vector<struct option>(0) ;
+//        longopts.reserve(100) ;
+    } ;
     // Destructor
-    virtual ~CLOptions() {} ;
+    virtual ~CLOptions()
+    {
+        // Loop through each storage map and delete all objects
+        std::map<std::string, CLBool*>::iterator bool_itr ;
+        for (bool_itr=params_bools.begin(); bool_itr!=params_bools.end(); ++bool_itr)
+            if (bool_itr->second != nullptr) delete bool_itr->second ;
+        
+        std::map<std::string, CLDouble*>::iterator dbl_itr;
+        for (dbl_itr=params_doubles.begin(); dbl_itr!=params_doubles.end(); ++dbl_itr)
+            if (dbl_itr->second != nullptr) delete dbl_itr->second ;
+        
+        std::map<std::string, CLInt*>::iterator int_itr;
+        for (int_itr=params_ints.begin(); int_itr!=params_ints.end(); ++int_itr)
+            if (int_itr->second != nullptr) delete int_itr->second ;
+        
+        std::map<std::string, CLString*>::iterator str_itr ;
+        for (str_itr=params_strings.begin(); str_itr!=params_strings.end(); ++str_itr)
+            if (str_itr->second != nullptr) delete str_itr->second ;
+    } ;
     
     
     // Methods for adding parameters of a specific type
@@ -246,28 +268,24 @@ public:
                     bool default_val)
         {
             CLBool* param = new CLBool(param_name, param_descrip, default_val, params_bools) ;
-            longopts.push_back({param_name.c_str(), required_argument,0,'b'}) ;
         }
     void AddDoubleParam(const std::string& param_name,
                     const std::string& param_descrip,
                     double default_val)
         {
             CLDouble* param = new CLDouble(param_name, param_descrip, default_val, params_doubles) ;
-            longopts.push_back({param_name.c_str(), required_argument,0,'d'}) ;
         }
     void AddIntParam(const std::string& param_name,
                     const std::string& param_descrip,
                     int default_val)
         {
             CLInt* param = new CLInt(param_name, param_descrip, default_val, params_ints) ;
-            longopts.push_back({param_name.c_str(), required_argument,0,'i'}) ;
         }
     void AddStringParam(const std::string& param_name,
                     const std::string& param_descrip,
                     std::string default_val)
         {
             CLString* param = new CLString(param_name, param_descrip, default_val, params_strings) ;
-            longopts.push_back({param_name.c_str(), required_argument,0,'s'}) ;
         }
     
     // This method actually sets the options from the passed command line arguements
@@ -279,10 +297,6 @@ public:
     double      AsDouble(const std::string& param_name) ;
     int         AsInt   (const std::string& param_name) ;
     std::string AsString(const std::string& param_name) ;
-    
-    // Get parameter as specific value
-    bool ParamAsBool (const std::string& param_name) ;
-    std::string ParamAsString(const std::string& param_name) ;
     
     // Print the values
     void PrintDetailed() ;  // With description
@@ -306,6 +320,16 @@ protected:
     std::map<std::string, CLInt*> params_ints ;
     std::map<std::string, CLString*> params_strings ;
     
+    // Internal method for creating a char* from a string
+    char* String2CharPtr(const std::string& str)
+    {
+        char* chr = new char[str.length()+1] ;
+        std::strcpy(chr, str.c_str()) ;
+        return chr ;
+    }
+    
+    void DefineParams() ;
+    
 private:
     
 };
@@ -319,18 +343,20 @@ private:
 //__________________________________________________________
 bool CLOptions::ParseCommandLine(int argc, char** argv)
 {
+    DefineParams() ;
     // Define the help parameter
-    longopts.push_back({"help",no_argument, 0, 'h'}) ;
+    //longopts.push_back({"help", no_argument, 0, 'h'}) ;
+
     // Push on the struct that tells us this is the end of the options
-    longopts.push_back({0,0,0,0}) ;
+    //longopts.push_back({0,0,0,0}) ;
     
     // Loop through all the passed options
-    int c;
+    int c(0);
     while (1)
     {
         /* getopt_long stores the option index here. */
-        int option_index = 0;
-        
+        int option_index = -1;
+
         c = getopt_long_only (argc, argv, "h",
                               &longopts[0], &option_index);
         
@@ -560,7 +586,7 @@ void CLOptions::PrintStrings(bool detailed)
 //__________________________________________________________
 void CLOptions::PrintHelp(const std::string& executable_name)
 {
-    std::cout << "USAGE: " << executable_name << " [options]" << std::endl;
+    std::cout << "\nUSAGE: " << executable_name << " [options]" << std::endl;
     std::cout << "\nAVAILABLE OPTIONS:" << std::endl;
     
     // Loop through the parameters and print their current values
@@ -597,7 +623,7 @@ void CLOptions::PrintHelp(const std::string& executable_name)
                     str_itr->second->getDefault().c_str()) ;
         PrintDescription(str_itr->second->getDescription()) ;
     }
-    
+    std::cout << std::endl;
 }
 
 //__________________________________________________________
@@ -631,6 +657,47 @@ void CLOptions::PrintDescription(const std::string& param_description)
         }
     }
     std::cout << std::endl;
+}
+
+//__________________________________________________________
+void CLOptions::DefineParams()
+{
+    // Clear out the longopts object
+    longopts.clear() ;
+    
+    // Resize it to hold exactly the number of variables we need
+    int options_count = params_bools.size() +
+                        params_doubles.size() +
+                        params_ints.size() +
+                        params_strings.size() + 2 ;
+    longopts.resize(options_count) ;
+    int opt_num(0) ;
+    
+    // Add the help options
+    longopts[opt_num++] = {"help", no_argument, 0, 'h'} ;
+    
+    // Add the bool options
+    std::map<std::string, CLBool*>::iterator biter ;
+    for (biter=params_bools.begin(); biter!=params_bools.end(); ++biter)
+        longopts[opt_num++] = {biter->first.c_str(), required_argument, 0, 'b'} ;
+    
+    // Add the double options
+    std::map<std::string, CLDouble*>::iterator diter ;
+    for (diter=params_doubles.begin(); diter!=params_doubles.end(); ++diter)
+        longopts[opt_num++] = {diter->first.c_str(), required_argument, 0, 'd'} ;
+    
+    // Add the int options
+    std::map<std::string, CLInt*>::iterator iiter ;
+    for (iiter=params_ints.begin(); iiter!=params_ints.end(); ++iiter)
+        longopts[opt_num++] = {iiter->first.c_str(), required_argument, 0, 'i'} ;
+    
+    // Add the string options
+    std::map<std::string, CLString*>::iterator siter ;
+    for (siter=params_strings.begin(); siter!=params_strings.end(); ++siter)
+        longopts[opt_num++] = {siter->first.c_str(), required_argument, 0, 's'} ;
+    
+    // Add the terminating options
+    longopts.back() = {0,0,0,0} ;
 }
 
 #endif /* CLOptions_h */
