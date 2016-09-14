@@ -118,3 +118,4 @@ StringParam just a string
 If there are people out there who happen to find this code useful, please let me know! I would be more than happy to continue expanding on it to include things like:
 * Definitions for vector parameters with a specific delimiter
 * Definitions for parameters which are required vs. those that are optional
+* Ability to pass a given parameter more than once and fill the values into a list.
