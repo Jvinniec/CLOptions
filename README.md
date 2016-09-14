@@ -9,6 +9,9 @@ simple executable script for defining and using command line
 options in your script. It also provides the functionality of
 printing help text and setting default values for those parameters.
 
+####Disclaimer####
+This code is built on top of the 'getopt' framework. If you find CLOptions useful, please give us a shoutout in your README.
+
 #Example#
 You could imagine creating some executable, in which you want the
 user to be able to provide you with some options.
