@@ -320,14 +320,8 @@ protected:
     std::map<std::string, CLInt*> params_ints ;
     std::map<std::string, CLString*> params_strings ;
     
-    // Internal method for creating a char* from a string
-    char* String2CharPtr(const std::string& str)
-    {
-        char* chr = new char[str.length()+1] ;
-        std::strcpy(chr, str.c_str()) ;
-        return chr ;
-    }
-    
+    // This method puts together the full list of parameters into
+    // the longopts vector so that it can be used by getopt
     void DefineParams() ;
     
 private:
