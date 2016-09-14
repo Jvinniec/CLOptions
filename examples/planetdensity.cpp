@@ -31,10 +31,8 @@ int main (int argc, const char* argv[])
   // Do some checks on the parameters
   if (options.AsDouble("Mass") <= 0.0) {
     std::cout << "[ERROR] Mass must be greater than 0!" << std::endl;
-    return 0 ;
   } else if (options.AsDouble("Radius") <= 0.0) {
     std::cout << "[ERROR] Radius must be greater than 0!" << std::endl;
-    return 0 ;
   } else {
     // Now print out the value of the planet:
     std::cout << "Planet parameters:" << std::endl;
