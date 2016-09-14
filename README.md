@@ -13,6 +13,7 @@ printing help text and setting default values for those parameters.
 You could imagine creating some executable, in which you want the
 user to be able to provide you with some options.
 <b>executable.cpp</b>
+This file is also available in the 'examples' directory.
 ```c++
 #include <iostream>
 #include "CLOptions.h"
