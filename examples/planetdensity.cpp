@@ -36,8 +36,8 @@ int main (int argc, const char* argv[])
   } else {
     // Now print out the value of the planet:
     std::cout << "Planet parameters:" << std::endl;
-    std::cout << "   Mass  : " << options.AsDouble("Mass") << " kg" << std::endl;
-    std::cout << "   Radius: " << options.AsDouble("Radius") << " m" << std::endl;
+    std::cout << "   Mass  : " << options["Mass"] << " kg" << std::endl;
+    std::cout << "   Radius: " << options["Radius"] << " m" << std::endl;
     std::cout << "   Density: " << options.AsDouble("Mass") / std::pow(options.AsDouble("Radius"), 3.0) << " kg/m^3" << std::endl;
   }
 
