@@ -579,6 +579,10 @@ void CLOptions::PrintHelp(const std::string& executable_name)
     std::cout << "\nUSAGE: " << executable_name << " [options]" << std::endl;
     std::cout << "\nAVAILABLE OPTIONS:" << std::endl;
     
+    // Specify the help information
+    std::printf("  -h, -help [no argument]\n") ;
+    PrintDescription("Prints out this help information.") ;
+    
     // Loop through the parameters and print their current values
     
     // BOOLEANS
