@@ -337,13 +337,9 @@ private:
 //__________________________________________________________
 bool CLOptions::ParseCommandLine(int argc, char** argv)
 {
+    // Establish the actual parameters
     DefineParams() ;
-    // Define the help parameter
-    //longopts.push_back({"help", no_argument, 0, 'h'}) ;
 
-    // Push on the struct that tells us this is the end of the options
-    //longopts.push_back({0,0,0,0}) ;
-    
     // Loop through all the passed options
     int c(0);
     while (1)
