@@ -5,6 +5,17 @@
 //  Created by Josh Cardenzana on 9/16/16.
 //  Copyright © 2016 JCardenzana. All rights reserved.
 //
+//  Compile with:
+//      g++ multipleinputfiles_getopt.cpp -o multipleinputfiles_getopt
+//
+//  Description:
+//      This serves as an example of how to create a single executable
+//      that is capable of taking two command line options '--input' and
+//      '--output' from the user. Specifically it shows how to do it
+//      using the GetOpt tools. For an example that demonstrates how
+//      to use the CLOptions tools see 'multipleinputfiles_cloptions.cpp'.
+//
+
 
 #include <iostream>
 #include <getopt.h>

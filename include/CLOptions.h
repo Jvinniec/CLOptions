@@ -310,6 +310,10 @@ public:
     void PrintHelp(const std::string& executable_name) ;
     void PrintDescription(const std::string& param_description) ;
     
+    // Set the name of the configuration file option
+    void SetConfigFileOption(const std::string& new_configfile_opt)
+        {configfile_opt_name = new_configfile_opt ;}
+    
 protected:
     // The variable used for storing the parameters
     std::vector<struct option> longopts ;
@@ -323,6 +327,9 @@ protected:
     // This method puts together the full list of parameters into
     // the longopts vector so that it can be used by getopt
     void DefineParams() ;
+    
+    // Default configuration file option name
+    std::string configfile_opt_name = "ConfigFile" ;
     
 private:
     
