@@ -118,8 +118,7 @@ IntegerParam 123
 StringParam just a string
 ```
 #Author#
-Name: J. Cardenzana
-Email: jvinniec (a) gmail.com
+Name: Josh V. Cardenzana
 
 #Future Improvements#
 If there are people out there who happen to find this code useful, please let me know! I would be more than happy to continue expanding on it to include things like:
@@ -128,4 +127,4 @@ If there are people out there who happen to find this code useful, please let me
 * Ability to pass a given parameter more than once and fill the values into a list.
 * Ability to pass options from a configuration file, and overwrite them with commands submitted on the command line (I'm actively working on this).
 
-If any of these sound like they would benefit you, LET ME KNOW and I'll see what I can do to get them implemented.
+If any of these sound like they would benefit you, LET ME KNOW by submitting an issue and I'll see what I can do to get them implemented.
