@@ -41,6 +41,7 @@
 #ifndef CLOptions_h
 #define CLOptions_h
 
+#include <fstream>
 #include <getopt.h>
 #include <map>
 #include <sstream>
@@ -55,6 +56,38 @@
 #define max_width ((max_description_width>pad_description_width) ? max_description_width : pad_description_width + 1)
 
 //enum CLParamType {BOOL, DOUBLE, INT, STRING} ;
+
+namespace CLOptionsHelper {
+    /***************************************
+     * Methods for splitting strings on some delimeter
+     ***************************************/
+    // Method for splitting a string based on some delimiter into a vector of strings
+    inline std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+        std::stringstream ss(s);
+        std::string item=std::string();
+        while (std::getline(ss, item, delim)) {
+            elems.push_back(item);
+        }
+        return elems;
+    }
+    // Method for splitting a string based on some delimiter into a vector of strings
+    inline std::vector<std::string> split(const std::string &s, char delim) {
+        std::vector<std::string> elems;
+        split(s, delim, elems);
+        return elems;
+    }
+    
+    // Tests whether a file is accessible
+    static inline bool file_exists (const std::string& name, bool hard_check=true) {
+        std::ifstream f( name.c_str() );
+        if ( !f.good() && hard_check ) {
+            // note that the name is put in quotes to show when
+            // extra white space has been added
+            std::cout << "[ERROR] File does not exist:\n   \"" << name << "\"" << std::endl;
+        }
+        return f.good();
+    }
+}
 
 /***************************************
  * CLParam
@@ -209,24 +242,6 @@ protected:
 private:
 };
 
-/***************************************
- * Methods for splitting strings on some delimeter
- ***************************************/
-// Method for splitting a string based on some delimiter into a vector of strings
-inline std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-    std::stringstream ss(s);
-    std::string item=std::string();
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
-}
-// Method for splitting a string based on some delimiter into a vector of strings
-inline std::vector<std::string> split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    split(s, delim, elems);
-    return elems;
-}
 
 /***************************************
  * CLOptions
@@ -235,11 +250,7 @@ inline std::vector<std::string> split(const std::string &s, char delim) {
 class CLOptions {
 public:
     // Basic constructor
-    CLOptions()
-    {
-//        longopts = std::vector<struct option>(0) ;
-//        longopts.reserve(100) ;
-    } ;
+    CLOptions() {} ;
     // Destructor
     virtual ~CLOptions()
     {
@@ -267,25 +278,55 @@ public:
                     const std::string& param_descrip,
                     bool default_val)
         {
-            CLBool* param = new CLBool(param_name, param_descrip, default_val, params_bools) ;
+            new CLBool(param_name, param_descrip, default_val, params_bools) ;
         }
     void AddDoubleParam(const std::string& param_name,
                     const std::string& param_descrip,
                     double default_val)
         {
-            CLDouble* param = new CLDouble(param_name, param_descrip, default_val, params_doubles) ;
+            new CLDouble(param_name, param_descrip, default_val, params_doubles) ;
         }
     void AddIntParam(const std::string& param_name,
                     const std::string& param_descrip,
                     int default_val)
         {
-            CLInt* param = new CLInt(param_name, param_descrip, default_val, params_ints) ;
+            new CLInt(param_name, param_descrip, default_val, params_ints) ;
         }
     void AddStringParam(const std::string& param_name,
                     const std::string& param_descrip,
                     std::string default_val)
         {
-            CLString* param = new CLString(param_name, param_descrip, default_val, params_strings) ;
+            new CLString(param_name, param_descrip, default_val, params_strings) ;
+        }
+    
+    // Here are some additional parameters that fall outside the typical parameters...
+    
+    // Add configuration file option
+    void AddConfigFileParam(const std::string& param_name = std::string(),
+                            const std::string& param_descrip = std::string(),
+                            const std::string& default_val = std::string(),
+                            const std::string& comment_var = "#")
+        {
+            // Set the value for the configuration file option
+            configfile_opt_name = (param_name.empty()) ? "ConfigFile" : param_name ;
+            std::string configfile_opt_desc = (param_descrip.empty()) ?
+                    "Configuration file containing options (will be overridden by values passed on the command line)." :
+                    param_descrip ;
+            configfile_comment = comment_var ;
+            
+            // Add an option for the configuration file parameter
+            AddStringParam(configfile_opt_name, configfile_opt_desc, default_val) ;
+        }
+    
+    // Add version information
+    void AddVersionParam(const std::string& param_name = "",
+                         const std::string& param_descrip = "Print version information and exit.",
+                         const std::string& text_to_be_printed = "version text not set")
+        {
+            // Set the name of the parameter
+            version_opt_name = (param_name.length()>0) ? param_name : "version" ;
+            // Set the actual parameter
+            AddStringParam(param_name, param_descrip, text_to_be_printed) ;
         }
     
     // This method actually sets the options from the passed command line arguements
@@ -327,9 +368,16 @@ protected:
     // This method puts together the full list of parameters into
     // the longopts vector so that it can be used by getopt
     void DefineParams() ;
+    bool SetParam(const std::string& param_name,
+                  std::vector<std::string> param_value) ;
+    
+    // Fill the options from a configuration file
+    bool FillFromFile(const std::string& filename) ;
     
     // Default configuration file option name
-    std::string configfile_opt_name = "ConfigFile" ;
+    std::string configfile_opt_name = std::string() ;
+    std::string configfile_comment ;  // Lines in the config file beginning with this will be ignored
+    std::string version_opt_name = std::string() ;
     
 private:
     
@@ -347,10 +395,37 @@ bool CLOptions::ParseCommandLine(int argc, char** argv)
     // Establish the actual parameters
     DefineParams() ;
 
+    // If we've defined a configuration file parameter, do a pre-loop to see if
+    // the user has passed that parameter
+    if (configfile_opt_name.size() > 0) {
+        // Loop until we find the config file name
+        bool use_default_configfile(true) ;
+        while(1) {
+            int c(0), options_index(-1) ;
+            
+            c = getopt_long_only(argc, argv, "",
+                                 &longopts[0], &options_index) ;
+            if (c==-1) break;
+            if (c==0) continue ;
+            if (std::string(longopts[options_index].name).compare(configfile_opt_name)==0) {
+                if (FillFromFile(optarg)) return true ;
+                use_default_configfile = false ;
+                break ;
+            }
+        }
+        // If the config file info wasnt filled AND if the default filename isnt empty
+        // fill the config options from the default file
+        if ((use_default_configfile)&&(!(*this)[configfile_opt_name].empty())) {
+            if (FillFromFile((*this)[configfile_opt_name])) return true ;
+        }
+    }
+    
+    optind = 0 ;
+    
     // Loop through all the passed options
-    int c(0);
     while (1)
     {
+        int c(0) ;
         /* getopt_long stores the option index here. */
         int option_index = -1;
 
@@ -359,26 +434,8 @@ bool CLOptions::ParseCommandLine(int argc, char** argv)
         
         /* Detect the end of the options. */
         if (c == -1) break;
-        
-        // Set the option
-        if ((c!='h')&&(c!=0)) {
-            std::string opt_name( longopts[option_index].name ) ;
-            std::string opt_val ( optarg ) ;
-            
-            // Fill in the correct variable
-            if (params_bools.count(opt_name) > 0) {
-                *params_bools[opt_name] = std::stoi(std::string(optarg)) ;
-            } else if (params_doubles.count(opt_name) > 0) {
-                *params_doubles[opt_name] = std::stod(opt_val) ;
-            } else if (params_ints.count(opt_name) > 0) {
-                *params_ints[opt_name] = std::stoi(opt_val) ;
-            } else if (params_strings.count(opt_name) > 0) {
-                *params_strings[opt_name] = opt_val ;
-            }
-        }
-        //options[longopts[option_index].name] = optarg ;
-//        std::cout << longopts[option_index].name << "\n   " << optarg << std::endl;
-        
+    
+        // Now loop through all of the options to fill them based on their values
         switch (c)
         {
             case 0:
@@ -389,14 +446,46 @@ bool CLOptions::ParseCommandLine(int argc, char** argv)
                 PrintHelp(argv[0]) ;
                 return true ;
             case '?':
-                /* getopt_long already printed an error message. */
+                // getopt_long_omly already printed an error message.
+                // This will most typically happen when then an unrecognized
+                // option has been passed.
                 return true ;
             default:
+                std::string opt_name( longopts[option_index].name ) ;
+                std::string opt_val ( optarg ) ;
+                std::vector<std::string> values = CLOptionsHelper::split( optarg, ' ') ;
+                SetParam(opt_name, values) ;
+                
                 break ;
         }
     }
     // Note that it is up to the user to handle conflicts between parameters
     return false ;
+}
+
+//__________________________________________________________
+// Note that the vector-ness of 'opt_vals' will allow for passing
+// values to options which take a list of values
+bool CLOptions::SetParam(const std::string& opt_name,
+              std::vector<std::string> opt_vals)
+{
+    // Special check for the version parameter
+    
+    
+    // Fill in the correct variable
+    if (params_bools.count(opt_name) > 0) {
+        *params_bools[opt_name] = std::stoi(std::string(opt_vals.front())) ;
+    } else if (params_doubles.count(opt_name) > 0) {
+        *params_doubles[opt_name] = std::stod(opt_vals.front()) ;
+    } else if (params_ints.count(opt_name) > 0) {
+        *params_ints[opt_name] = std::stoi(opt_vals.front()) ;
+    } else if (params_strings.count(opt_name) > 0) {
+        *params_strings[opt_name] = opt_vals.front() ;
+    } else {
+        return false ;
+    }
+
+    return true ;
 }
 
 //__________________________________________________________
@@ -631,7 +720,7 @@ void CLOptions::PrintHelp(const std::string& executable_name)
 void CLOptions::PrintDescription(const std::string& param_description)
 {
     // Split the description into individual words
-    std::vector<std::string> desc_words = split(param_description, ' ') ;
+    std::vector<std::string> desc_words = CLOptionsHelper::split(param_description, ' ') ;
     std::vector<std::string>::iterator word ;
     
     int current_length(0) ;
@@ -674,7 +763,7 @@ void CLOptions::DefineParams()
     longopts.resize(options_count) ;
     int opt_num(0) ;
     
-    // Add the help options
+    // Add the help option
     longopts[opt_num++] = {"help", no_argument, 0, 'h'} ;
     
     // Add the bool options
@@ -699,6 +788,41 @@ void CLOptions::DefineParams()
     
     // Add the terminating options
     longopts.back() = {0,0,0,0} ;
+}
+
+//__________________________________________________________
+// Note this method returns true when there has been an error reading
+// from the file
+bool CLOptions::FillFromFile(const std::string& filename)
+{
+    std::cout << "Filling from " << filename << std::endl;
+    // First make sure that the file can actually be opened for reading
+    if (!CLOptionsHelper::file_exists(filename)) {
+        return true ;
+    }
+    
+    // Open the supplied file
+    std::ifstream configFile(filename) ;
+    std::string line ;
+    while (std::getline(configFile, line)) {
+        // Skip if the line is empty
+        if (line.empty()) continue ;
+        // Skip if the line is a comment
+        if (line.find(configfile_comment) == 0) continue ;
+        
+        // Split the line on spaces
+        std::vector<std::string> param = CLOptionsHelper::split(line, ' ') ;
+        
+        // Create a separate string vector that represents the user
+        // defined values for this parameter
+        std::vector<std::string> values(param.begin()+1, param.end()) ;
+        if (values.size() == 0) continue ;
+        
+        // Now actually set the parameter
+        if (!SetParam(param.front(), values)) return false ;
+    }
+    
+    return false ;
 }
 
 #endif /* CLOptions_h */

@@ -1,0 +1,13 @@
+# This is the configuration file that goes with
+# the 'configfile_example.cpp' example program.
+
+# NOTE that the '#' at the beginning of each
+# line tells the program that this line is a 
+# comment. You can change this to whatever suits
+# your program style in the 'AddConfigFile
+
+# Define the pi value
+Pi 41.3
+
+# Define whether i like pi
+ILikePi 0
