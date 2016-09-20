@@ -20,7 +20,7 @@ CLOptions DefineOptions()
     // a configuration file option (this ability is off by default)
     // The passed parameters to this method are:
     //    1. Parameter Name - Default is "ConfigFile"
-    //    2. Description    - Tell your users what this does
+    //    2. Description    - Tell your users what this does (there is also a default for this)
     //    3. Default        - Give a default file name to be used
     //    4. Comment ID (#) - Some string that identifies when a line is to be
     //                        interpreted as a comment in the config file.
