@@ -50,10 +50,6 @@ int main (int argc, char** argv)
         c = getopt_long(argc, argv, "i:o:", longopts, &option_index) ;
         
         // If the option is valid, fill the corresponding value
-        if ((c>0)&&(option_index>=0)) {
-            input_parameters[longopts[option_index].name] = optarg ;
-        }
-        
         switch (c) {
             case 'i':
                 // Fill input option
@@ -64,6 +60,10 @@ int main (int argc, char** argv)
             case '?':
                 // getopt_long printed an error message
                 break ;
+	    default :
+	      if (option_index >= 0) {
+                input_parameters[longopts[option_index].name] = optarg ;
+	      }
         }
     }
     
