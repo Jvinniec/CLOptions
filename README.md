@@ -9,15 +9,19 @@ simple executable script for defining and using command line
 options in your script. It also provides the functionality of
 printing help text and setting default values for those parameters.
 
+**Wiki page:** https://github.com/Jvinniec/CLOptions/wiki
+
+**Tutorial:** https://github.com/Jvinniec/CLOptions/wiki/Tutorial
+
 ####Disclaimer####
 This code is built on top of the 'getopt' framework. If you find CLOptions useful, please give us a shoutout in your README.
 
 #Example#
 You could imagine creating some executable, in which you want the
-user to be able to provide you with some options.
+user to be able to provide you with some options on the command line. For the sake of this example, lets say you want them to provide you with one integer, boolean, double, and string. The code below demonstrates how you would do this with CLOptions.
 
 <b>executable.cpp</b></br>
-This file is also available in the 'examples' directory.
+*This file is also available in the 'examples' directory.*
 ```c++
 #include <iostream>
 #include "CLOptions.h"
@@ -125,6 +129,6 @@ If there are people out there who happen to find this code useful, please let me
 * Definitions for vector parameters with a specific delimiter
 * Definitions for parameters which are required vs. those that are optional
 * Ability to pass a given parameter more than once and fill the values into a list.
-* Ability to pass options from a configuration file, and overwrite them with commands submitted on the command line (I'm actively working on this).
+* <del>Ability to pass options from a configuration file, and overwrite them with commands submitted on the command line.</del> Implemented as of v1.1.0. See 'examples/configfile_example.cpp' for an example.
 
 If any of these sound like they would benefit you, LET ME KNOW by submitting an issue and I'll see what I can do to get them implemented.
