@@ -1,7 +1,7 @@
-// personaldetails_3.cpp
+// personaldetails_5.cpp
 
 // compile with:
-// g++ -std=c++11 -I../include personaldetails_3.cpp -o personaldetails_3
+// g++ -std=c++11 -I../include personaldetails_5.cpp -o personaldetails_5
 #include <iostream>
 #include <string>
 #include "CLOptions.h"
@@ -21,6 +21,7 @@ int main (int argc, char** argv)
     options.AddStringParam("Name","This is the person's name.","") ;
     options.AddIntParam("Age","The age of the person in years",0) ;
     options.AddDoubleParam("Weight","The weight of the person in pounds.",0.0);
+    options.AddConfigFileParam() ;
     
     // Parse the command line options
     if (options.ParseCommandLine(argc, argv)) {

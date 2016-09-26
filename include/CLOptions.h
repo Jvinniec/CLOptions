@@ -49,11 +49,11 @@
 #include <vector>
 
 // Some defines when printing parameter descriptions
-#define max_description_width 80    // Controls the maximum # of characters to print in description
-#define pad_description_width 15    // Controls how many spaces are printed before each line of the description
+#define clopt_max_description_width 80    // Controls the maximum # of characters to print in description
+#define clopt_pad_description_width 15    // Controls how many spaces are printed before each line of the description
 
 // This parameter prevents the case where 'max_descriptoin_width' < 'pad_description_width'
-#define max_width ((max_description_width>pad_description_width) ? max_description_width : pad_description_width + 1)
+#define max_width ((clopt_max_description_width>clopt_pad_description_width) ? clopt_max_description_width : clopt_pad_description_width + 1)
 
 //enum CLParamType {BOOL, DOUBLE, INT, STRING} ;
 
@@ -100,9 +100,11 @@ public:
     CLParam<T>(const std::string& param_name,
                      const std::string& info,
                      T default_val) :
-    parameter_name(param_name), description(info), value(default_val), default_value(default_val)
+       parameter_name(param_name), description(info),
+       value(default_val), default_value(default_val),
+       is_set(false)
     {
-        if (description.empty()) description="No description for " + parameter_name + ".";
+        if (description.empty()) description="No description for " + parameter_name + ". I guess you're on your own.";
     }
     virtual ~CLParam() {}
     virtual CLParam<T>& operator=(const T& other) {
@@ -113,8 +115,22 @@ public:
     T getDefault() {return default_value;}
     T getValue() {return value;}
     std::string getParamName() {return parameter_name;}
+    const char* getParamNameChar() {return parameter_name.c_str() ;}
     std::string getDescription() {return description;}
-    void setValue(T new_value) {value = new_value;}
+    // Various parameter setters
+    void setDefault(T new_default)
+    {
+        default_value = new_default ;
+    }
+    void setValue(T new_value)
+    {
+        value = new_value;
+        is_set = true ;
+    }
+    void setParamName(const std::string& newname) {parameter_name = newname;}
+    void setDescription(const std::string& newdesc) {description = newdesc;}
+
+    // Print the information about the parameter
     void Print() {
         std::cout << "# " << description << std::endl ;
         std::cout << "# [Default = " << default_value << "]" << std::endl;
@@ -128,6 +144,7 @@ protected:
     std::string description ;
     T value ;
     T default_value ;
+    bool is_set ;
 private:
 };
 
@@ -162,6 +179,7 @@ private:
  ************************************************/
 class CLString : public CLParam<std::string> {
 public:
+    CLString() : CLParam<std::string>() {} ;
     CLString(const std::string& param_name,
                    const std::string& info,
                    const std::string& default_val,
@@ -207,10 +225,12 @@ public:
     }
     CLDouble& operator=(const std::string& other) {
         value = std::stod(other);
+        is_set = true ;
         return *this ;
     }
     CLDouble& operator=(double other) {
         value = other ;
+        is_set = true ;
         return *this ;
     }
 protected:
@@ -232,10 +252,12 @@ public:
     }
     CLInt& operator=(const std::string& other) {
         value = std::stoi(other);
+        is_set = true ;
         return *this ;
     }
     CLInt& operator=(int other) {
         value = other ;
+        is_set = true ;
         return *this ;
     }
 protected:
@@ -319,14 +341,20 @@ public:
         }
     
     // Add version information
-    void AddVersionParam(const std::string& param_name = "",
-                         const std::string& param_descrip = "Print version information and exit.",
-                         const std::string& text_to_be_printed = "version text not set")
+    void AddVersionInfo(const std::string& text_to_be_printed = "version text not set",
+                        const std::string& param_name = "",
+                        const std::string& param_descrip = "")
         {
             // Set the name of the parameter
-            version_opt_name = (param_name.length()>0) ? param_name : "version" ;
+            std::string version_opt_name = (param_name.length()>0) ? param_name : "version" ;
+            std::string version_opt_desc = (param_descrip.empty()) ? "Print version information and exit." : param_descrip ;
+            
             // Set the actual parameter
-            AddStringParam(param_name, param_descrip, text_to_be_printed) ;
+//            version_opt = CLString(version_opt_name, version_opt_desc, text_to_be_printed) ;
+            version_opt.setParamName(version_opt_name) ;
+            version_opt.setDescription(version_opt_desc) ;
+            version_opt.setValue(text_to_be_printed) ;
+            
         }
     
     // This method actually sets the options from the passed command line arguements
@@ -349,7 +377,8 @@ public:
     
     // Print the help information (i.e. all of the parameters and their descriptions)
     void PrintHelp(const std::string& executable_name) ;
-    void PrintDescription(const std::string& param_description) ;
+    void PrintDescription(const std::string& param_description,
+                          int left_padding = clopt_pad_description_width) ;
     
     // Set the name of the configuration file option
     void SetConfigFileOption(const std::string& new_configfile_opt)
@@ -377,7 +406,7 @@ protected:
     // Default configuration file option name
     std::string configfile_opt_name = std::string() ;
     std::string configfile_comment ;  // Lines in the config file beginning with this will be ignored
-    std::string version_opt_name = std::string() ;
+    CLString version_opt ;
     
 private:
     
@@ -420,7 +449,11 @@ bool CLOptions::ParseCommandLine(int argc, char** argv)
         }
     }
     
+    // Reset the option index so that we can start over filling the options
+    // that were passed on the command line
     optind = 0 ;
+
+    std::string short_opts = std::string("h") + (version_opt.getValue().empty() ? "" : "v") ;
     
     // Loop through all the passed options
     while (1)
@@ -429,7 +462,7 @@ bool CLOptions::ParseCommandLine(int argc, char** argv)
         /* getopt_long stores the option index here. */
         int option_index = -1;
 
-        c = getopt_long_only (argc, argv, "h",
+        c = getopt_long_only (argc, argv, short_opts.c_str(),
                               &longopts[0], &option_index);
         
         /* Detect the end of the options. */
@@ -444,6 +477,10 @@ bool CLOptions::ParseCommandLine(int argc, char** argv)
             case 'h':
                 // Print the help message and quit
                 PrintHelp(argv[0]) ;
+                return true ;
+            case 'v':
+                // Print the version information
+                PrintDescription(version_opt.getValue(), 0) ;
                 return true ;
             case '?':
                 // getopt_long_omly already printed an error message.
@@ -679,6 +716,12 @@ void CLOptions::PrintHelp(const std::string& executable_name)
     std::printf("  -h, -help [no argument]\n") ;
     PrintDescription("Prints out this help information.") ;
     
+    // Specify the version information
+    if (!version_opt.getParamName().empty()) {
+        std::printf("  -v, -%s [no argument]\n", version_opt.getParamName().c_str()) ;
+        PrintDescription(version_opt.getDescription()) ;
+    }
+    
     // Loop through the parameters and print their current values
     
     // BOOLEANS
@@ -717,7 +760,7 @@ void CLOptions::PrintHelp(const std::string& executable_name)
 }
 
 //__________________________________________________________
-void CLOptions::PrintDescription(const std::string& param_description)
+void CLOptions::PrintDescription(const std::string& param_description, int left_padding)
 {
     // Split the description into individual words
     std::vector<std::string> desc_words = CLOptionsHelper::split(param_description, ' ') ;
@@ -728,17 +771,17 @@ void CLOptions::PrintDescription(const std::string& param_description)
     for (word=desc_words.begin(); word!=desc_words.end(); ++word) {
         // If there are no words on this line, print the next word
         if (current_length == 0) {
-            for (int s=0; s<pad_description_width; s++) std::cout << " " ;
+            for (int s=0; s<left_padding; s++) std::cout << " " ;
             std::cout << (*word) << " " ;
-            current_length = pad_description_width + word->length() + 1 ;
+            current_length = left_padding + word->length() + 1 ;
         }
         // Else, if the next word would send us over the limit of the
         // line, print a new line and then print the word
         else if (current_length+word->length() > max_width) {
             std::cout << std::endl ;
-            for (int s=0; s<pad_description_width; s++) std::cout << " " ;
+            for (int s=0; s<left_padding; s++) std::cout << " " ;
             std::cout << (*word) << " " ;
-            current_length = pad_description_width + word->length() + 1 ;
+            current_length = left_padding + word->length() + 1 ;
         }
         // Else, just print the word
         else {
@@ -760,11 +803,18 @@ void CLOptions::DefineParams()
                         params_doubles.size() +
                         params_ints.size() +
                         params_strings.size() + 2 ;
+    if (!version_opt.getParamName().empty()) options_count++ ;
+    
     longopts.resize(options_count) ;
     int opt_num(0) ;
     
     // Add the help option
     longopts[opt_num++] = {"help", no_argument, 0, 'h'} ;
+    
+    // Add the version information if so requested
+    if (!version_opt.getParamName().empty()) {
+        longopts[opt_num++] = {version_opt.getParamNameChar(), no_argument, 0, 'v'};
+    }
     
     // Add the bool options
     std::map<std::string, CLBool*>::iterator biter ;

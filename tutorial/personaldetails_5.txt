@@ -1,0 +1,10 @@
+# personaldetails_5.txt
+
+# This is how much the person weighs
+Weight 345.678
+
+# This is the name I want to give the person
+Name Sally
+
+# This is the age of the person
+Age 56
