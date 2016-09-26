@@ -1,7 +1,7 @@
-// personaldetails_5.cpp
+// personaldetails_6.cpp
 
 // compile with:
-// g++ -std=c++11 -I../include personaldetails_5.cpp -o personaldetails_5
+// g++ -std=c++11 -I../include personaldetails_6.cpp -o personaldetails_6
 #include <iostream>
 #include <string>
 #include "CLOptions.h"
