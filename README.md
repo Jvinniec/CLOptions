@@ -129,6 +129,8 @@ If there are people out there who happen to find this code useful, please let me
 * Definitions for vector parameters with a specific delimiter
 * Definitions for parameters which are required vs. those that are optional
 * Ability to pass a given parameter more than once and fill the values into a list.
-* <del>Ability to pass options from a configuration file, and overwrite them with commands submitted on the command line.</del> Implemented as of v1.1.0. See 'examples/configfile_example.cpp' for an example.
+* <del>Ability to pass options from a configuration file, and overwrite them with commands submitted on the command line.</del>   Implemented as of v1.1.0. See 'examples/configfile_example.cpp' for an example.
+* <del>Ability to specify version information using `-v` or `-version` command line option</del>  
+Implemented as of v1.2.0.
 
 If any of these sound like they would benefit you, LET ME KNOW by submitting an issue and I'll see what I can do to get them implemented.
