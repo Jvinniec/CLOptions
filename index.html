@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Cloptions by Jvinniec</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Cloptions</h1>
+        <h2>Easy command line options for C++ scripts. Include the &#39;CLOptions.h&#39; header to allow simple definitions of command line options through the &#39;getopt&#39; framework. The &#39;-h&#39; and &#39;-help&#39; options are constructed for you to make printing usage text for your code extremely simple. Checkout the code samples in the &#39;examples&#39; directory for samples.</h2>
+        <a href="https://github.com/Jvinniec/CLOptions" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <pre><code>     ____  _________    ____  __  _________
+    / __ \/ ____/   |  / __ \/  |/  / ____/
+   / /_/ / __/ / /| | / / / / /|_/ / __/   
+  / _, _/ /___/ ___ |/ /_/ / /  / / /___   
+ /_/ |_/_____/_/  |_/_____/_/  /_/_____/                                      
+</code></pre>
+
+<p>The header file in 'include/CLOptions.h' can be included in your
+simple executable script for defining and using command line
+options in your script. It also provides the functionality of
+printing help text and setting default values for those parameters.</p>
+
+<p><strong>Wiki page:</strong> <a href="https://github.com/Jvinniec/CLOptions/wiki">https://github.com/Jvinniec/CLOptions/wiki</a></p>
+
+<p><strong>Tutorial:</strong> <a href="https://github.com/Jvinniec/CLOptions/wiki/Tutorial">https://github.com/Jvinniec/CLOptions/wiki/Tutorial</a></p>
+
+<h4>
+<a id="disclaimer" class="anchor" href="#disclaimer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Disclaimer</h4>
+
+<p>This code is built on top of the 'getopt' framework. If you find CLOptions useful, please give us a shoutout in your README.</p>
+
+<h1>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h1>
+
+<p>You could imagine creating some executable, in which you want the
+user to be able to provide you with some options on the command line. For the sake of this example, lets say you want them to provide you with one integer, boolean, double, and string. The code below demonstrates how you would do this with CLOptions.</p>
+
+<p><b>executable.cpp</b>
+<em>This file is also available in the 'examples' directory.</em></p>
+
+<div class="highlight highlight-source-c++"><pre>#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>iostream<span class="pl-pds">&gt;</span></span>
+#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">"</span>CLOptions.h<span class="pl-pds">"</span></span>
+
+CLOptions <span class="pl-en">DefineOptions</span>() 
+{
+  <span class="pl-c">// Create a CLOptions object</span>
+  CLOptions options ;
+
+  <span class="pl-c">// Add some parameters of different types</span>
+  <span class="pl-c">// The format for each parameter definition is:</span>
+  <span class="pl-c">//    1 - Command line option name</span>
+  <span class="pl-c">//    2 - Description of parameter</span>
+  <span class="pl-c">//    3 - Default value</span>
+  options.<span class="pl-c1">AddIntParam</span>(<span class="pl-s"><span class="pl-pds">"</span>IntegerParam<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>This is a simple integer parameter.<span class="pl-pds">"</span></span>,
+      <span class="pl-c1">123</span>) ;
+  options.<span class="pl-c1">AddDoubleParam</span>(<span class="pl-s"><span class="pl-pds">"</span>DoubleParam<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>This is a simple double parameter.<span class="pl-pds">"</span></span>,
+      <span class="pl-c1">123.456</span>) ;
+  options.<span class="pl-c1">AddBoolParam</span>(<span class="pl-s"><span class="pl-pds">"</span>BooleanParam<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>This is a simple boolean parameter<span class="pl-pds">"</span></span>,
+      <span class="pl-c1">false</span>) ;
+  options.<span class="pl-c1">AddStringParam</span>(<span class="pl-s"><span class="pl-pds">"</span>StringParam<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>This is a simple string parameter<span class="pl-pds">"</span></span>,
+      <span class="pl-s"><span class="pl-pds">"</span>just a string<span class="pl-pds">"</span></span>) ;
+
+  <span class="pl-k">return</span> options ;
+}
+
+<span class="pl-k">int</span> <span class="pl-en">main</span>(<span class="pl-k">int</span> argc, <span class="pl-k">const</span> <span class="pl-k">char</span>* argv[])
+{
+  <span class="pl-c">// Initialize the options parameter</span>
+  CLOptions options = <span class="pl-c1">DefineOptions</span>() ;
+
+  <span class="pl-c">// Now fill the options from the command line arguements.</span>
+  <span class="pl-c">// Note that the 'ParseCommandLine()' method returns a bool</span>
+  <span class="pl-c">// which specifies when the '-h','-help', or a problem has occured.</span>
+  <span class="pl-c">// This allows you to quit when this happens.</span>
+  <span class="pl-k">if</span> (options.<span class="pl-c1">ParseCommandLine</span>(argc, <span class="pl-k">const_cast</span>&lt;<span class="pl-k">char</span>**&gt;(argv))) {
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+  }
+
+  <span class="pl-c">// Now we can access the parameters which have been set</span>
+  <span class="pl-k">int</span> some_int = options.<span class="pl-c1">AsInt</span>(<span class="pl-s"><span class="pl-pds">"</span>IntegerParam<span class="pl-pds">"</span></span>) ;
+  <span class="pl-k">double</span> some_dbl = options.<span class="pl-c1">AsDouble</span>(<span class="pl-s"><span class="pl-pds">"</span>DoubleParam<span class="pl-pds">"</span></span>) ;
+  <span class="pl-k">bool</span> some_bool = options.<span class="pl-c1">AsBool</span>(<span class="pl-s"><span class="pl-pds">"</span>BooleanParam<span class="pl-pds">"</span></span>) ;
+  std::string some_str = options.<span class="pl-c1">AsString</span>(<span class="pl-s"><span class="pl-pds">"</span>StringParam<span class="pl-pds">"</span></span>) ;
+
+  <span class="pl-c">// Now lets print out the values as an example</span>
+  std::cout &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\n</span>Printing options individualy:<span class="pl-pds">"</span></span> &lt;&lt; std::endl;
+  std::cout &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span>IntegerParam <span class="pl-pds">"</span></span> &lt;&lt; options.<span class="pl-c1">AsInt</span>(<span class="pl-s"><span class="pl-pds">"</span>IntegerParam<span class="pl-pds">"</span></span>) &lt;&lt; std::endl;
+  std::cout &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span>DoubleParam <span class="pl-pds">"</span></span> &lt;&lt; options.<span class="pl-c1">AsDouble</span>(<span class="pl-s"><span class="pl-pds">"</span>DoubleParam<span class="pl-pds">"</span></span>) &lt;&lt; std::endl;
+  std::cout &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span>BooleanParam <span class="pl-pds">"</span></span> &lt;&lt; options.<span class="pl-c1">AsBool</span>(<span class="pl-s"><span class="pl-pds">"</span>BooleanParam<span class="pl-pds">"</span></span>) &lt;&lt; std::endl;
+  std::cout &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span>StringParam <span class="pl-pds">"</span></span> &lt;&lt; options.<span class="pl-c1">AsString</span>(<span class="pl-s"><span class="pl-pds">"</span>StringParam<span class="pl-pds">"</span></span>) &lt;&lt; std::endl;
+
+  <span class="pl-c">// Note that we can also get the above behavior directly from 'CLOptions::PrintSimple()'</span>
+  std::cout &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span><span class="pl-cce">\n</span>Printing options directly:<span class="pl-pds">"</span></span> &lt;&lt; std::endl;
+  options.<span class="pl-c1">PrintSimple</span>() ;
+
+  <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div>
+
+<p>This executable is easily compiled via:</p>
+
+<pre><code>$ g++ -std=c++11 -I[CLOptions-install-directory]/include executable.cpp -o executable
+</code></pre>
+
+<p>The help text can be printed as follows:</p>
+
+<pre><code>$ ./executable -h
+
+USAGE: ./executable [options]
+
+AVAILABLE OPTIONS:
+  -BooleanParam [bool, default=0]
+               This is a simple boolean parameter 
+  -DoubleParam [double, default=123.456000]
+               This is a simple double parameter. 
+  -IntegerParam [int, default=123]
+               This is a simple integer parameter. 
+  -StringParam [string, default=just a string]
+               This is a simple string parameter
+</code></pre>
+
+<p>The code can be executed with the following results:</p>
+
+<pre><code>$ ./executable -DoubleParam 3.14159 -BooleanParam 1
+
+Printing options individualy:
+IntegerParam 123
+DoubleParam 3.14159
+BooleanParam 1
+StringParam just a string
+
+Printing options directly:
+BooleanParam 1
+DoubleParam 3.14159
+IntegerParam 123
+StringParam just a string
+</code></pre>
+
+<h1>
+<a id="author" class="anchor" href="#author" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Author</h1>
+
+<p>Name: Josh V. Cardenzana</p>
+
+<h1>
+<a id="future-improvements" class="anchor" href="#future-improvements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Future Improvements</h1>
+
+<p>If there are people out there who happen to find this code useful, please let me know! I would be more than happy to continue expanding on it to include things like:</p>
+
+<ul>
+<li>Definitions for vector parameters with a specific delimiter</li>
+<li>Definitions for parameters which are required vs. those that are optional</li>
+<li>Ability to pass a given parameter more than once and fill the values into a list.</li>
+<li>
+<del>Ability to pass options from a configuration file, and overwrite them with commands submitted on the command line.</del>   Implemented as of v1.1.0. See 'examples/configfile_example.cpp' for an example.</li>
+<li>
+<del>Ability to specify version information using <code>-v</code> or <code>-version</code> command line option</del><br>
+Implemented as of v1.2.0.</li>
+</ul>
+
+<p>If any of these sound like they would benefit you, LET ME KNOW by submitting an issue and I'll see what I can do to get them implemented.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/Jvinniec/CLOptions/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/Jvinniec/CLOptions/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/Jvinniec/CLOptions"></a> is maintained by <a href="https://github.com/Jvinniec">Jvinniec</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
