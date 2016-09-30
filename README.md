@@ -134,4 +134,4 @@ If there are people out there who happen to find this code useful, please let me
 * <del>Ability to specify version information using `-v` or `-version` command line option</del>  
 Implemented as of v1.2.0.
 
-If any of these sound like they would benefit you, LET ME KNOW by submitting an issue and I'll see what I can do to get them implemented.
+If any of these sound like they would benefit you, LET ME KNOW by submitting an [issue](https://github.com/Jvinniec/CLOptions/issues) and I'll see what I can do to get them implemented.
