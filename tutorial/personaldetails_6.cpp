@@ -4,7 +4,7 @@
 // g++ -std=c++11 -I../include personaldetails_6.cpp -o personaldetails_6
 #include <iostream>
 #include <string>
-#include "CLOptions.h"
+#include "CLOptions_cxx.h"
 
 void PrintDetails(std::string name, int age, double weight)
 {
