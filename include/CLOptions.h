@@ -124,7 +124,7 @@ public:
     std::string getShortParamName() {return parameter_name_short;}
     std::string getFullParamName()
         {
-            std::string fullname = parameter_name ;
+            std::string fullname = std::string("-")+parameter_name ;
             if (!parameter_name_short.empty()) {
                 fullname = parameter_name_short+", -"+fullname ;
             }
@@ -817,12 +817,12 @@ void CLOptions::PrintHelp(const std::string& executable_name)
     std::cout << "\nAVAILABLE OPTIONS:" << std::endl;
     
     // Specify the help information
-    std::printf("  -h, -help [no argument]\n") ;
+    std::printf("  -h, --help [no argument]\n") ;
     PrintDescription("Prints out this help information.") ;
     
     // Specify the version information
     if (!version_opt.getParamName().empty()) {
-        std::printf("  -v, -%s [no argument]\n", version_opt.getParamName().c_str()) ;
+        std::printf("  -v, --%s [no argument]\n", version_opt.getParamName().c_str()) ;
         PrintDescription(version_opt.getDescription()) ;
     }
     

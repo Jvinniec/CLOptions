@@ -8,7 +8,6 @@
 // compile with:
 // g++ -std=c++11 -I../include short_options_example.cpp -o short_options_example
 
-
 #include <stdio.h>
 #include <iostream>
 #include "CLOptions.h"
