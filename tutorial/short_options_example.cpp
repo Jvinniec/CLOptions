@@ -47,7 +47,6 @@ CLOptions DefineOptions()
     options.AddIntParam("a,Age","The age of the person in years",0) ;
     options.AddDoubleParam("w,Weight","The weight of the person in pounds.",0.0);
     options.AddVersionInfo("short_options_example v1") ;
-    options.AddProgramDescription("This program is intended to serve as an example for providing both short and long form parameters to a program.") ;
     return options ;
 }
 
