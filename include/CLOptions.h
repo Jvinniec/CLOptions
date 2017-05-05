@@ -41,6 +41,7 @@
 #ifndef CLOptions_h
 #define CLOptions_h
 
+#include <iostream>
 #include <fstream>
 #include <getopt.h>
 #include <map>
@@ -98,11 +99,11 @@ class CLParam {
 public:
     CLParam<T>() {};
     CLParam<T>(const std::string& param_name,
-                     const std::string& info,
-                     T default_val) :
-       parameter_name(param_name), description(info),
-       value(default_val), default_value(default_val),
-       is_set(false)
+               const std::string& info,
+               T default_val) :
+        parameter_name(param_name), description(info),
+        value(default_val), default_value(default_val),
+        is_set(false)
     {
         if (description.empty()) description="No description for " + parameter_name + ". I guess you're on your own.";
         std::vector<std::string> param_name_split = CLOptionsHelper::split(param_name, ',') ;
@@ -173,9 +174,9 @@ class CLBool : public CLParam<bool> {
 public:
     CLBool() : CLParam<bool>() {};
     CLBool(const std::string& param_name,
-                 const std::string& info,
-                 bool default_val,
-                 std::map<std::string, CLBool*> &bool_map) :
+           const std::string& info,
+           bool default_val,
+           std::map<std::string, CLBool*> &bool_map) :
     CLParam<bool>(param_name, info, default_val)
     {
         bool_map[parameter_name] = this ;
@@ -201,9 +202,9 @@ class CLString : public CLParam<std::string> {
 public:
     CLString() : CLParam<std::string>() {} ;
     CLString(const std::string& param_name,
-                   const std::string& info,
-                   const std::string& default_val,
-                   std::map<std::string, CLString*> &str_map) :
+             const std::string& info,
+             const std::string& default_val,
+             std::map<std::string, CLString*> &str_map) :
     CLParam<std::string>(param_name, info, default_val)
     {
         str_map[parameter_name] = this ;
@@ -236,9 +237,9 @@ private:
 class CLDouble : public CLParam<double> {
 public:
     CLDouble(const std::string& param_name,
-                   const std::string& info,
-                   double default_val,
-                   std::map<std::string, CLDouble*> &dbl_map) :
+             const std::string& info,
+             double default_val,
+             std::map<std::string, CLDouble*> &dbl_map) :
     CLParam<double>(param_name, info, default_val)
     {
         dbl_map[parameter_name] = this ;
@@ -265,9 +266,9 @@ private:
 class CLInt : public CLParam<int> {
 public:
     CLInt(const std::string& param_name,
-                const std::string& info,
-                int default_val,
-                std::map<std::string, CLInt*> &int_map) :
+          const std::string& info,
+          int default_val,
+          std::map<std::string, CLInt*> &int_map) :
     CLParam<int>(param_name, info, default_val)
     {
         int_map[parameter_name] = this ;
@@ -321,26 +322,26 @@ public:
     
     // Methods for adding parameters of a specific type
     void AddBoolParam(const std::string& param_name,
-                    const std::string& param_descrip,
-                    bool default_val)
+                      const std::string& param_descrip,
+                      bool default_val)
         {
             new CLBool(param_name, param_descrip, default_val, params_bools) ;
         }
     void AddDoubleParam(const std::string& param_name,
-                    const std::string& param_descrip,
-                    double default_val)
+                        const std::string& param_descrip,
+                        double default_val)
         {
             new CLDouble(param_name, param_descrip, default_val, params_doubles) ;
         }
     void AddIntParam(const std::string& param_name,
-                    const std::string& param_descrip,
-                    int default_val)
+                     const std::string& param_descrip,
+                     int default_val)
         {
             new CLInt(param_name, param_descrip, default_val, params_ints) ;
         }
     void AddStringParam(const std::string& param_name,
-                    const std::string& param_descrip,
-                    std::string default_val)
+                        const std::string& param_descrip,
+                        std::string default_val)
         {
             new CLString(param_name, param_descrip, default_val, params_strings) ;
         }
@@ -356,8 +357,8 @@ public:
             // Set the value for the configuration file option
             configfile_opt_name = (param_name.empty()) ? "ConfigFile" : param_name ;
             std::string configfile_opt_desc = (param_descrip.empty()) ?
-                    "Configuration file containing options (will be overridden by values passed on the command line)." :
-                    param_descrip ;
+            "Configuration file containing options (will be overridden by values passed on the command line)." :
+            param_descrip ;
             configfile_comment = comment_var ;
             
             // Add an option for the configuration file parameter
@@ -415,7 +416,7 @@ public:
     // Set the name of the configuration file option
     void SetConfigFileOption(const std::string& new_configfile_opt)
         {configfile_opt_name = new_configfile_opt ;}
-
+    
     bool SetParam(const std::string& param_name,
                   std::vector<std::string> param_value) ;
     
@@ -433,6 +434,7 @@ protected:
     // the longopts vector so that it can be used by getopt
     void DefineParams() ;
     struct option DefineOptSingle(const char* name, int has_arg, int *flag, int val) ;
+    
     
     // Fill the options from a configuration file
     bool FillFromFile(const std::string& filename) ;
@@ -509,7 +511,7 @@ bool CLOptions::ParseCommandLine(int argc, char** argv)
             // If short form options were given, then enforce the "double-dash" policy
             // for long options
             c = getopt_long (argc, argv, short_opts.c_str(),
-                                &longopts[0], &option_index);
+                             &longopts[0], &option_index);
         }
         
         /* Detect the end of the options. */
@@ -530,15 +532,19 @@ bool CLOptions::ParseCommandLine(int argc, char** argv)
                 PrintDescription(version_opt.getValue(), 0) ;
                 return true ;
             case '?':
-                // getopt_long_omly already printed an error message.
-                // This will most typically happen when then an unrecognized
-                // option has been passed.
+                // getopt_long_only already printed an error message.
+                // This will most typically happen when an unrecognized
+                // option has been passed, or when an option expecting
+                // an argument was not given one on the commandline.
                 return true ;
             default:
+                // We have found an option, so get the option name
                 std::string opt_name ;
                 if (option_index >= 0) {
+                    // The long form of the name was supplied
                     opt_name = longopts[option_index].name ;
                 } else {
+                    // The short form of the name was supplied
                     char c_char(c) ;
                     opt_name = short_to_long_map[std::string(&c_char)] ;
                 }
@@ -601,7 +607,7 @@ std::map<std::string, std::string> CLOptions::GetShortOpts(std::string& short_op
 // Note that the vector-ness of 'opt_vals' will allow for passing
 // values to options which take a list of values
 bool CLOptions::SetParam(const std::string& opt_name,
-              std::vector<std::string> opt_vals)
+                         std::vector<std::string> opt_vals)
 {
     // Special check for the version parameter
     
@@ -923,7 +929,7 @@ void CLOptions::DefineParams()
     // Add the bool options
     std::map<std::string, CLBool*>::iterator biter ;
     for (biter=params_bools.begin(); biter!=params_bools.end(); ++biter) {
-        longopts[opt_num++] = DefineOptSingle(biter->first.c_str(), required_argument, 0, 0) ;
+        longopts[opt_num++] = DefineOptSingle(biter->first.c_str(), required_argument, 0, 'b') ;
     }
     
     // Add the double options
@@ -946,7 +952,6 @@ void CLOptions::DefineParams()
     
     // Add the terminating options
     longopts.back() = DefineOptSingle(0,0,0,0) ;
-
 }
 
 //__________________________________________________________
