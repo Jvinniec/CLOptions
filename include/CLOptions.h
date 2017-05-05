@@ -415,6 +415,9 @@ public:
     // Set the name of the configuration file option
     void SetConfigFileOption(const std::string& new_configfile_opt)
         {configfile_opt_name = new_configfile_opt ;}
+
+    bool SetParam(const std::string& param_name,
+                  std::vector<std::string> param_value) ;
     
 protected:
     // The variable used for storing the parameters
@@ -430,9 +433,6 @@ protected:
     // the longopts vector so that it can be used by getopt
     void DefineParams() ;
     struct option DefineOptSingle(const char* name, int has_arg, int *flag, int val) ;
-    
-    bool SetParam(const std::string& param_name,
-                  std::vector<std::string> param_value) ;
     
     // Fill the options from a configuration file
     bool FillFromFile(const std::string& filename) ;
