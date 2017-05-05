@@ -13,10 +13,10 @@ printing help text and setting default values for those parameters.
 
 **Tutorial:** https://github.com/Jvinniec/CLOptions/wiki/Tutorial
 
-####Disclaimer####
+#### Disclaimer ####
 This code is built on top of the 'getopt' framework. If you find CLOptions useful, please give us a shoutout in your README.
 
-#Example#
+# Example #
 You could imagine creating some executable, in which you want the
 user to be able to provide you with some options on the command line. For the sake of this example, lets say you want them to provide you with one integer, boolean, double, and string. The code below demonstrates how you would do this with CLOptions.
 
@@ -121,18 +121,18 @@ DoubleParam 3.14159
 IntegerParam 123
 StringParam just a string
 ```
-#Author#
-Name: Josh V. Cardenzana
+## ABOUT ##
+Author: Josh V. Cardenzana
 
-#Future Improvements#
+## Future Improvements ##
 If there are people out there who happen to find this code useful, please let me know! I would be more than happy to continue expanding on it to include things like:
 * Exception throwing when a string is passed to a parameter expecting a number type.
 * Definitions for vector parameters with a specific delimiter
 * Definitions for parameters which are required vs. those that are optional
 * Ability to pass a given parameter more than once and fill the values into a list.
-* <del>Definitions of both long and short forms of an argument (for instance setting the parameter `Param` with either `-P` or `-Param`).</del> Implemented as of v1.2.1.
-* <del>Ability to pass options from a configuration file, and overwrite them with commands submitted on the command line.</del>   Implemented as of v1.1.0. See 'examples/configfile_example.cpp' for an example.
-* <del>Ability to specify version information using `-v` or `-version` command line option</del>  
+* ~~Definitions of both long and short forms of an argument (for instance setting the parameter `Param` with either `-P` or `-Param`).~~ Implemented as of v1.2.1.
+* ~~Ability to pass options from a configuration file, and overwrite them with commands submitted on the command line.~~   Implemented as of v1.1.0. See 'examples/configfile_example.cpp' for an example.
+* ~~Ability to specify version information using `-v` or `-version` command line option~~  
 Implemented as of v1.2.0.
 
 If any of these sound like they would benefit you, LET ME KNOW by submitting an [issue](https://github.com/Jvinniec/CLOptions/issues) and I'll see what I can do to get them implemented.
