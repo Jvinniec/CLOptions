@@ -4,6 +4,11 @@
       / _, _/ /___/ ___ |/ /_/ / /  / / /___   
      /_/ |_/_____/_/  |_/_____/_/  /_/_____/                                      
 
+### Deprecated ###
+Note: This code is officially deprecated. There are many alternatives for putting command line options in C++ scripts
+(such as [gflags](https://gflags.github.io/gflags/)) that maintaining another is probably unnecessary. If requested, 
+I can make updates to the code, but at the moment I see no reason to continue development on CLOptions.
+
 The header file in 'include/CLOptions.h' can be included in your
 simple executable script for defining and using command line
 options in your script. It also provides the functionality of
