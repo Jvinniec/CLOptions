@@ -55,7 +55,7 @@ int main (int argc, char** argv)
     
     // Just for fun
     if (options.AsBool("ILikePi")) {
-        std::cout << "Who doesnt love Pi?" << std::endl;
+        std::cout << "Who doesn't love Pi?" << std::endl;
     } else {
         std::cout << "YOU MONSTER! How could you not like pi!?!?!?" << std::endl;
     }
