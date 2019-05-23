@@ -3,7 +3,7 @@
 //  CLOptions
 //
 //  Created by Josh Cardenzana on 9/16/16.
-//  Copyright © 2016 JCardenzana. All rights reserved.
+//  Copyright © 2016-2019 JCardenzana. All rights reserved.
 //
 //  Compile with:
 //      g++ multipleinputfiles_getopt.cpp -o multipleinputfiles_getopt
