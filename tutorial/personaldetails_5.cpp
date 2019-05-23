@@ -1,7 +1,16 @@
-// personaldetails_5.cpp
+/*************************************************************************
+ * File: personaldetails_5.cpp (CLOptions)
+ * Copyright © 2017-2019 JCardenzana. All rights reserved.
+ * 
+ * Description:
+ *      Demonstrates the same functionality as personaldetails_4, but now
+ *      the option for passing the parameters inside a configuration file
+ *      has been added.
+ * 
+ * Compile with:
+ *      g++ -std=c++11 -I../include personaldetails_5.cpp -o personaldetails_5
+ ************************************************************************/
 
-// compile with:
-// g++ -std=c++11 -I../include personaldetails_5.cpp -o personaldetails_5
 #include <iostream>
 #include <string>
 #include "CLOptions.h"

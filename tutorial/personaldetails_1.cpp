@@ -1,5 +1,14 @@
-// personaldetails_1.cpp
-
+/*************************************************************************
+ * File: personaldetails_1.cpp (CLOptions)
+ * Copyright © 2017-2019 JCardenzana. All rights reserved.
+ * 
+ * Description:
+ *      Demonstrates the most basic program for printing information about
+ *      a user, when that information is hardcoded into the program.
+ * 
+ * Compile with
+ *      g++ -std=c++11 personaldetails_1.cpp -o personaldetails_1
+ ************************************************************************/
 #include <iostream>
 #include <string>
 

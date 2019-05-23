@@ -1,7 +1,15 @@
-// personaldetails_6.cpp
+/*************************************************************************
+ * File: personaldetails_6.cpp (CLOptions)
+ * Copyright © 2017-2019 JCardenzana. All rights reserved.
+ * 
+ * Description:
+ *      Same as personaldetails_5, but adds version text to be printed when
+ *      the '-v' or '--version' flag is passed.
+ * 
+ * Compile with:
+ *      g++ -std=c++11 -I../include personaldetails_6.cpp -o personaldetails_6
+ ************************************************************************/
 
-// compile with:
-// g++ -std=c++11 -I../include personaldetails_6.cpp -o personaldetails_6
 #include <iostream>
 #include <string>
 #include "CLOptions.h"

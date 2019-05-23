@@ -1,7 +1,14 @@
-// personaldetails_2.cpp
+/*************************************************************************
+ * File: personaldetails_2.cpp (CLOptions)
+ * Copyright © 2017-2019 JCardenzana. All rights reserved.
+ * 
+ * Description:
+ *      Demonstrates passing parameters as a space separated list.
+ * 
+ * Compile with:
+ *      g++ -std=c++11 personaldetails_2.cpp -o personaldetails_2
+ ************************************************************************/
 
-// compile with:
-// g++ -std=c++11 personaldetails_2.cpp -o personaldetails_2
 #include <iostream>
 #include <string>
 
@@ -22,9 +29,9 @@ int main (int argc, char** argv)
     }
     
     // Define some personal details
-    std::string name = std::string(argv[1]) ;
-    int age = std::stoi(argv[2]) ;
-    double weight = std::stod(argv[3]) ;
+    std::string name   = std::string(argv[1]) ;
+    int         age    = std::stoi(argv[2]) ;
+    double      weight = std::stod(argv[3]) ;
     
     // Print the persons details
     PrintDetails(name, age, weight) ;
