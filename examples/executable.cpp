@@ -11,19 +11,26 @@ CLOptions DefineOptions()
   //    1 - Command line option name
   //    2 - Description of parameter
   //    3 - Default value
-  options.AddIntParam("IntegerParam",
-		      "This is a simple integer parameter.",
-		      123) ;
-  options.AddDoubleParam("DoubleParam",
-			 "This is a simple double parameter.",
-			 123.456) ;
-  options.AddBoolParam("BooleanParam",
-		       "This is a simple boolean parameter",
-		       false) ;
-  options.AddStringParam("StringParam",
-			 "This is a simple string parameter",
-			 "just a string") ;
-      
+  options.AddIntParam("i,IntegerParam",
+                      "This is a simple integer parameter.",
+                      1)   ;
+  options.AddDoubleParam("d,DoubleParam",
+                         "This is a simple double parameter.",
+                         123.456) ;
+  options.AddBoolParam("b,BooleanParam",
+                       "This is a simple boolean parameter",
+                       false) ;
+  options.AddStringParam("s,StringParam",
+                         "This is a simple string parameter",
+                         "just a string") ;
+
+  // Add text to be printed with '-v' or '--version' options
+  options.AddVersionInfo("executable v1.0");
+
+  // Add detailed description of program to be printed
+  // when '-h' or '--help' options are used
+  options.AddProgramDescription("Executable demonstrating CLOptions usage.");
+
   return options ;
 }
 
@@ -41,10 +48,10 @@ int main(int argc, const char* argv[])
   }
 
   // Now we can access the parameters which have been set
-  int some_int = options.AsInt("IntegerParam") ;
-  double some_dbl = options.AsDouble("DoubleParam") ;
-  bool some_bool = options.AsBool("BooleanParam") ;
-  std::string some_str = options.AsString("StringParam") ;
+  int         some_int  = options.AsInt("IntegerParam") ;
+  double      some_dbl  = options.AsDouble("DoubleParam") ;
+  bool        some_bool = options.AsBool("BooleanParam") ;
+  std::string some_str  = options.AsString("StringParam") ;
   
   // Now lets print out the values as an example
   std::cout << "\nPrinting options individualy:" << std::endl;
