@@ -404,6 +404,9 @@ public:
     int         AsInt   (const std::string& param_name) ;
     std::string AsString(const std::string& param_name) ;
     
+    // Return whether parameter exists
+    bool HasPar(const std::string& param_name);
+
     // Print the values
     void PrintDetailed() ;  // With description
     void PrintSimple() ;    // Without description
@@ -704,6 +707,23 @@ std::string CLOptions::AsString(const std::string& param_name)
     } else {
         return params_strings[param_name]->getValue();
     }
+}
+
+//__________________________________________________________
+bool CLOptions::HasPar(const std::string& param_name)
+{
+    bool par_exists = false;
+    // Check if any of the maps has the parameter
+    if ((params_bools.count(param_name) > 0) ||
+        (params_doubles.count(param_name) > 0) ||
+        (params_ints.count(param_name) > 0) ||
+        (params_strings.count(param_name) > 0)) {
+        
+        // The parameter exists
+        par_exists = true;
+    }
+
+    return par_exists;
 }
 
 //__________________________________________________________
